@@ -1,0 +1,77 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        consume-in-0:
+          destination: chrysppTopic
+          content-type: application/json
+          group: group1
+          consumer:
+            concurrency: 1
+            maxAttempts: 1
+            partitioned: true
+        producer-out-0:
+          destination: chrysppTopic
+          content-type: application/json
+          group: group1
+          producer:
+            partitionCount: 1
+            requiredGroups: group1
+            useNativeEncoding: true
+      kafka:
+        binder:
+          brokers: localhost:29092,localhost:39092
+          consumerProperties:
+            autoStartup: true
+            max.poll.records: 100
+            max.poll.interval.ms: 900000
+            request.timeout.ms: 300000
+            session.timeout.ms: 300000
+            heartbeat.interval.ms: 10000
+          producerProperties:
+            value:
+              subject:
+                name:
+                  strategy: org.springframework.kafka.support.serializer
+        bindings:
+          consume-in-0:
+            consumer:
+              ackMode: RECORD
+              startOffset: earliest
+          #              resetOffsets: true
+          producer-out-0:
+            producer:
+              messageKeyExpression: payload
+              configuration:
+                key.serializer: org.springframework.kafka.support.serializer.JsonSerializer
+                value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+server:
+  port: 8082
+  servlet:
+    encoding:
+      charset: "UTF-8"
+
+resilience4j:
+  ratelimiter:
+    instances:
+      appArsenalController:
+        limitForPeriod: 100
+        limitRefreshPeriod: 1000ms
+        timeoutDuration: 2000ms
+  timelimiter:
+    instances:
+      appArsenalController:
+        timeoutDuration: 2s
+
+management:
+  endpoint:
+    health:
+      show-details: "ALWAYS"
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
