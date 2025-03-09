@@ -11,9 +11,7 @@ public class KafkaListener {
 
     @Bean
     public Consumer<Message<String>> consume(){
-        return msg -> {
-            System.out.println(msg.getPayload());
-        };
+        return msg -> System.out.println("Message received: " + msg.getPayload());
     }
 
 }
