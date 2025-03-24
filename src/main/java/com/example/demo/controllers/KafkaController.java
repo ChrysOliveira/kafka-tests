@@ -1,6 +1,9 @@
 package com.example.demo.controllers;
 
+import com.example.demo.domain.MessageDomain;
 import com.example.demo.service.KafkaService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,13 +18,13 @@ public class KafkaController {
     }
 
     @PostMapping("/send-message")
-    public String sendMessage(@RequestBody String message) {
-        boolean result = this.kafkaService.sendMessage("producer-out-0", message);
+    public ResponseEntity<String> sendMessage(@RequestBody @Valid MessageDomain messageDomain) {
+        boolean result = this.kafkaService.sendMessageToKafka("producer-out-0", messageDomain);
 
         if (result) {
-            return "Message sent successfully";
+            return ResponseEntity.ok("Message sent successfully");
         } else {
-            return "Error trying to send message";
+            return ResponseEntity.badRequest().body("Error trying to send message");
         }
     }
 }

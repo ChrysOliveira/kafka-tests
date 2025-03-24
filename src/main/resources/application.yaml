@@ -17,7 +17,7 @@ spring:
           producer:
             partitionCount: 1
             requiredGroups: group1
-            useNativeEncoding: true
+            useNativeEncoding: false
       kafka:
         binder:
           brokers: localhost:29092,localhost:39092
@@ -38,12 +38,18 @@ spring:
             consumer:
               ackMode: RECORD
               startOffset: earliest
-          #              resetOffsets: true
+#              resetOffsets: true
+              configuration:
+                key.deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+                value.deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+                spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+                spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+                spring.json.trusted.packages: "*"
           producer-out-0:
             producer:
               messageKeyExpression: payload
               configuration:
-                key.serializer: org.springframework.kafka.support.serializer.JsonSerializer
+                key.serializer: org.apache.kafka.common.serialization.ByteArraySerializer
                 value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:

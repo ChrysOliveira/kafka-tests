@@ -45,14 +45,3 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
-  kadeck:
-    image: xeotek/kadeck:5.3.0
-    ports:
-      - 8080:80
-    environment:
-      xeotek_kadeck_free: "test@test.com"
-      xeotek_kadeck_port: 80
-
-volumes:
-  kadeck_data:
